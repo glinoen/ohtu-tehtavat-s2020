@@ -13,36 +13,35 @@ import statistics.matcher.*;
  * @author julinden
  */
 public class QueryBuilder {
-    private ArrayList<Matcher> matchers;
+    private Matcher matcher;
 
     public QueryBuilder() {
-        this.matchers = new ArrayList<>();
+        this.matcher = new All();
     }
      
     public Matcher build() {
-       this.matchers.add(new All());
-       Matcher matcher = new And(this.matchers.toArray(new Matcher[0]));
-       this.matchers = new ArrayList<>();
-       return matcher;
+       Matcher returnMatcher = this.matcher;
+       this.matcher = new All();
+       return returnMatcher;
     }
     
     public QueryBuilder playsIn(String team) {
-        this.matchers.add(new PlaysIn(team));
+        this.matcher = new And(this.matcher ,new PlaysIn(team));
         return this;
     }
     
     public QueryBuilder hasAtLeast(int value, String category) {
-        this.matchers.add(new HasAtLeast(value, category));
+        this.matcher = new And(this.matcher,new HasAtLeast(value, category));
         return this;
     }
     
     public QueryBuilder hasFewerThan(int value, String category) {
-        this.matchers.add(new HasFewerThan(value, category));
+        this.matcher = new And(this.matcher,new HasFewerThan(value, category));
         return this;
     }
     
     public QueryBuilder oneOf(Matcher... matchers) {
-        this.matchers.add(new Or(matchers));
+        this.matcher = new Or(matchers);
         return this;
     }
 }
